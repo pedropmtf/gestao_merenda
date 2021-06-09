@@ -1,0 +1,32 @@
+{% extends 'base_layout.html' %}  
+
+<body>
+    {% block content %} 
+        <h1>Pratos</h1>
+        <table class='table'>
+            <thread>
+                <tr>
+                    <th class='col'>Id</th>
+                    <th class='col'>Nome</th>
+                    <th class='col'>Descrição</th>
+                    <th class='col'></th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for pratos in todos_pratos %}
+                    <tr>
+                        <th scope='row'>{{ pratos.pratos_id }}</th>
+                        <td>{{ pratos.nome }}</td>
+                        <td>{{ pratos.descricao }}</td>
+                        <td><a href="{{ url_for('info_prato', id= pratos.pratos_id  )}}"><button type='button' class='btn btn-info'>Info</button></td>
+                        <td><a href='#'><button type='button' class='btn btn-success'>Editar</button></a></td>
+                        <td><a href='#'><button type='button' class='btn btn-danger'>Excluir</button></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class='btn-novo-item'>
+            <a href='/novo_prato'><button type='button' class='btn btn-success'>Novo Prato</button></a>
+        </div>
+    {% endblock %}
+</body>

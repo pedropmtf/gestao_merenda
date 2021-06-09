@@ -1,0 +1,49 @@
+{% extends 'base_layout.html' %}
+
+<body>
+    {% block content %} 
+    
+        <h1>Estoque</h1>
+        <div class='select-produto'>
+            <label for='Produto'>Escolha o alimento:</label>
+            <select name='Produto' id='Produto'>
+                <option value='abacaxi'>Abacaxi</option>
+                <option value='Maçã'>Maçã</option>
+            </select>
+        </div>
+        <div class='select-setor'>
+            <label for='Setor'>Escolha o Setor:</label>
+            <select name='Setor' id='Setor'>
+                <option value='Almoxarifado Central'>Almoxarifado Central</option>
+                <option value='Escola'>Escola</option>
+            </select>
+        </div>
+        <div>
+            <table class='table'>
+                <thread>
+                    <tr>
+                        <th class='col'>id</th>
+                        <th class='col'>Produto</th>
+                        <th class='col'>Setor</th>
+                        <th class='col'>Quantidade</th>
+                        <th class='col'>Unidade</th>
+                        <th class='col'></th>
+                        <th class='col'></th>
+                    </tr>
+                </thread>
+                <tbody>
+                    <tr>
+                        <th scope='row'></th>
+                        <td>Produto</td>
+                        <td>Setor</td>
+                        <td>Quantidade</td>
+                        <td>Unidade</td>
+                        <td><a href='/entrada_produtos'><button type='button' class='btn btn-success'>Entrada</button></a></td>
+                        <td><a href='/saida_produtos'><button type='button' class='btn btn-danger'>Saída</button></a></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+</body>

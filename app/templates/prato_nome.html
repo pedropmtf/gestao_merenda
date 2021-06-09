@@ -1,0 +1,32 @@
+{% extends 'base_layout.html' %}
+
+    <body>
+        {% block content %}
+            <h1>{{ nome }}</h1>
+            <form method="POST">
+                {{ form.csrf_token }}
+                <div class='form-group'>
+                    {{ form.alimento_select.label }}
+                    {{ form.alimento_select(class_="form-control") }}
+                </div>
+                
+                <input type="submit" value="Submit" class="btn btn-sucess">
+            </form>
+            <table class="table">
+                <thread>
+                    <tr>
+                        <th class='col'>Nome</th>
+                        <th class='col'>Quantidade</th>
+                    </tr>
+                </thread>
+                <tbody>
+                    {% for alimentos in todos_alimentos %}
+                        <tr>
+                            <th>{{ alimentos.nome }} </th>
+                            <th>Null</th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endblock %}
+    </body>

@@ -1,0 +1,7 @@
+{% extends 'base_layout.html' %} 
+<body>
+    {% block content %} 
+        <h1>QRCODE</h1>
+        <img src="{{url_for('static', filename='qrcode001.png')}}" alt="Qrcode de avaliacao">
+    {% endblock %} 
+</body>

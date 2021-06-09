@@ -1,0 +1,23 @@
+{% extends 'base_layout.html' %} 
+
+<body>
+    {% block content %} 
+        <h1>Entrada de produtos</h1>
+        <form action= "{{ url_for('entrada_produtos') }}" method="POST">
+            {{ form.csrf_token }}
+            {{ form.origem.label }}
+            {{ form.origem }}
+            {{ form.destino.label }}
+            {{ form.destino }}
+            {{ form.quantidade.label }}
+            {{ form.quantidade }}
+            {{ form.alimento.label }}
+            {{ form.alimento }}
+            {{ form.notaFiscal.label }}
+            {{ form.notaFiscal }}
+        </form>
+        <div class='btn-novo-item'>
+            <a href='/alimentos'><button type='button' class='btn btn-success'>Cadastrar</button></a>
+        </div>
+    {% endblock %}
+</body>

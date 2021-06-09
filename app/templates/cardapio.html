@@ -1,0 +1,21 @@
+{% extends 'base_layout.html' %} 
+{% block configs %} 
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/main.min.js'></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/main.min.css'>
+</head>
+{% endblock %}
+<body>
+    {% block content %} 
+        <h1 class='card'>Cardápio</h1>
+        <div id='calendar'></div>
+        <script>
+            let calendarEl = document.getElementById('calendar');
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {});
+
+            calendar.render();
+        </script>
+    {% endblock %}
+
+</body>

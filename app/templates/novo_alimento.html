@@ -1,0 +1,60 @@
+{% extends 'base_layout.html' %} 
+
+<body>
+    {% block content %}
+        <h1>Novo Alimento</h1>
+        <div class='form-novo-alim'>
+            <form action="{{ url_for('novo_alimento') }}" method="POST">
+                {{ form.csrf_token }}
+                <div class='form-group'>
+                    {{ form.nome.label }}
+                    {{ form.nome(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.energia.label }}
+                    {{ form.energia(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.proteina.label }}
+                    {{ form.proteina(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.lipideos.label }}
+                    {{ form.lipideos(class_="form-control") }}
+                </div>
+                <div class='from-group'>
+                    {{ form.carboidratos.label }}
+                    {{ form.carboidratos(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.calcio.label }}
+                    {{ form.calcio(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.ferro.label }}
+                    {{ form.ferro(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.retinol.label }}
+                    {{ form.retinol(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.vitamina_c.label }}
+                    {{ form.vitamina_c(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.sodio.label }}
+                    {{ form.sodio(class_="form-control") }}
+                </div>
+                <div class='form-group'>
+                    {{ form.restricao.label }}
+                    {{ form.restricao(class_="form-control") }}
+                </div>
+                
+            </form>
+        </div>
+        <div class='btn-novo-item'>
+            <a href='/alimentos'><button type='button' class='btn btn-success'>Cadastrar</button></a>
+        </div>
+    {% endblock %}
+</body>

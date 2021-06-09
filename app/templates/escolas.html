@@ -1,0 +1,36 @@
+{% extends 'base_layout.html' %} 
+
+<body>
+    {% block content %}
+
+        <h1>Escolas</h1>
+        <table class='table'>
+            <thread>
+                <tr>
+                    <th class='col'>id</th>
+                    <th class='col'>Escola</th>
+                    <th class='col'>Endereço</th>
+                    <th class='col'>Bairro</th>
+                    <th class='col'>Alunos</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for escola in escolas %}
+                    <div id = "linha" >
+                        <tr>
+                            <th scope='row'>{{ escola.id }}</th>
+                            <td>{{ escola.nome }}</td>
+                            <td>{{ escola.endereco }}</td>
+                            <td>{{ escola.bairro }}</td>
+                            <td>{{ escola.alunos }}</td>
+                        </tr>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class='btn-novo-item'>
+            <a href='/nova_escola'><button type='button' class='btn btn-success'>Nova escola</button></a>
+        </div>
+        
+    {% endblock %}
+</body>

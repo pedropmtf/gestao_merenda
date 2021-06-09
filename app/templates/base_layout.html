@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+<body>
+    {% block navegacao %} 
+            <div class='dropdown'>
+                <a href='/home'><button class='dropbtn'>Home</button></a>  
+            </div>
+            <div class='dropdown'>
+                <button class='dropbtn'>Estoque</button>
+                <div class='dropdown-content'>
+                    <a href='/estoque'>Estoque</a>
+                    <a href='/novos_produtos'>Novos Produtos</a>
+                    <a href='#'>c</a>
+                </div>
+            </div>
+            <div class='dropdown'>
+                <button class='dropbtn'>Nutrição</button>
+                <div class='dropdown-content'>
+                    <a href='/alimentos'>Alimentos</a>
+                    <a href='/pratos'>Pratos</a>
+                    <a href='/cardapio'>Cardápio</a>
+                </div>
+            </div>
+            <div class='dropdown'>
+                <button class='dropbtn'>Escolas</button>
+                <div class='dropdown-content'>
+                    <a href='/escolas'>Escolas</a>
+                    <a href='/qrcode'>Qrcode</a>
+                </div>
+            </div>
+            <div class='dropdown'>
+                <button class='dropbtn'>Financeiro</button>
+                <div class='dropdown-content'>
+                    <a href='/financeiro'>Financeiro</a>
+                </div>
+            </div>
+            
+    {% endblock %}
+</body>
