@@ -2,6 +2,19 @@
 <body>
     {% block content %} 
         <h1>QRCODE</h1>
+        <form>
+            {{ csrf_token }}
+            {{ form.escola_select.label}}
+            {{ form.escola_select }}
+            <input type="button" value= "Submit" >
+        </form>
+        <div>
+            <img id="demo">
+            <img src="{{url_for('static', filename='qrcode002.png')}}" alt="Qrcode de avaliacao">
+        </div>
+        
         <img src="{{url_for('static', filename='qrcode001.png')}}" alt="Qrcode de avaliacao">
+        
+
     {% endblock %} 
 </body>

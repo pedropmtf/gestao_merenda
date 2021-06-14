@@ -5,6 +5,7 @@ from sqlalchemy.orm import backref, relationship
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.fields.core import IntegerField, FloatField, SelectField
+from wtforms.fields.html5 import SearchField 
 
 
  
@@ -24,30 +25,44 @@ class User(db.Model, UserMixin):
 
     def __str__(self):
         return self.name
-
+"""
 pratos_alimentos = db.Table("pratos_alimentos",
                             db.Column("pratos_id", db.Integer, db.ForeignKey('Pratos.pratos_id'), primary_key=True),
                             db.Column("alimentos_id", db.Integer, db.ForeignKey('Alimentos.alimentos_id'), primary_key=True)
                             )
-"""
-class pratos_alimentos(db.Model. UserMixin):
+
+"""                            
+
+class pratos_alimentos(db.Model, UserMixin):
     __tablename__ = "pratos_alimentos_association"
-    Pratos_id = db.Column(Integer, ForeignKey('Pratos.pratos_id'), primary_key=True)
-    Alimentos_id = db.Column(Integer, ForeignKey('Alimentos.alimentos_id), primary_key=True)
-    quantidade = db.Column(Integer)
+    Pratos_id = db.Column(db.Integer, db.ForeignKey('Pratos.pratos_id', ondelete="CASCADE"), primary_key=True)
+    Alimentos_id = db.Column(db.Integer, db.ForeignKey('Alimentos.alimentos_id'), primary_key=True)
+    quantidade = db.Column(db.Integer)
     alimentos = db.relationship('Alimentos', back_populates = "")
     pratos = db.relationship('Pratos', back_populates ="alimentos_relat")
-"""
+
+
+class Movimentos(db.Model, UserMixin):
+    __tablename__ = 'Movimentos'
+    id = db.Column(db.Integer, primary_key=True)
+    Alimentos_id = db.Column(db.Integer, db.ForeignKey('Alimentos.alimentos_id'), primary_key=True)
+    origem_id = db.Column(db.Integer, db.ForeignKey('Escolas.id'), primary_key=True)
+    destino_id = db.Column(db.Integer, db.ForeignKey('Escolas.id'), primary_key=True)
+    nota_fiscal = db.Column(db.Integer)
+    quantidade = db.Column(db.Integer)
+    alimentos = db.relationship('Alimentos', back_populates="alimentos_relat")
+    origem = db.relationship('Escolas', foreign_keys=[origem_id])
+    destino = db.relationship('Escolas', foreign_keys=[destino_id])
 
 class Pratos(db.Model, UserMixin):
     __tablename__ = "Pratos"
     pratos_id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(84))
     descricao = db.Column(db.String(200))
-    alimentos_relat = db.relationship('Alimentos', secondary=pratos_alimentos, backref=db.backref('alimentos_usados', lazy='dynamic'))
-    """
-    alimentos_relat = db.relationship("pratos_alimentos", back_populates="pratos")
-    """
+    #alimentos_relat = db.relationship('Alimentos', secondary=pratos_alimentos, backref=db.backref('alimentos_usados', lazy='dynamic'))
+    alimentos_relat = db.relationship("pratos_alimentos", back_populates="pratos", cascade="all, delete", passive_deletes=True)
+
+
 class Alimentos(db.Model, UserMixin):
     __tablename__ = "Alimentos"
     alimentos_id = db.Column(db.Integer, primary_key=True)
@@ -62,22 +77,8 @@ class Alimentos(db.Model, UserMixin):
     vitamina_c = db.Column(db.Float)
     sodio = db.Column(db.Float)
     restricao = db.Column(db.Integer)
-    """
     pratos_relat = db.relationship("pratos_alimentos", back_populates="alimentos")
-    """
-
-################################
-"""
-entrada de dados na table de association
-
-p = Pratos()
-a = pratos_alimentos(quantidade = )
-a.alimentos = Alimentos()
-p.alimentos_relat.append(a)
-
-"""
-################################
-
+    alimentos_relat = db.relationship("Movimentos", back_populates="alimentos")
 
 class Roles(db.Model, UserMixin):
     __tablename__ = "Roles"
@@ -97,10 +98,29 @@ class Escolas(db.Model, UserMixin):
     endereco = db.Column(db.String(84))
     alunos = db.Column(db.Integer)
 
-class satisfacao(db.Model, UserMixin):
-    __tablename__ = 'satisfacao'
+
+class Satisfacao(db.Model, UserMixin):
+    __tablename__ = 'Satisfacao'
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer)
+
+#############
+#Avaliar esse codigo
+
+
+#####################
+
+
+
+class Estoque(db.Model, UserMixin):
+    __tablename__ = 'Estoque'
+    id = db.Column(db.Integer, primary_key=True)
+
+
+
+#######################################################
+#               FORMS
+#######################################################
 
 class LoginForm(FlaskForm):
     login = StringField('login')
@@ -120,10 +140,10 @@ class NovoAlimentoForm(FlaskForm):
     restricao = IntegerField('restricao')
 
 class EntradaProdutos(FlaskForm):
-    origem = StringField('origem')
-    destino = StringField('destino')
+    origem = SelectField('origem')
+    destino = SelectField('destino')
     quantidade = FloatField('quantidade')
-    alimento = StringField('alimento')
+    alimento = SelectField('alimento')
     notaFiscal = IntegerField('notaFiscal')
 
 class novaEscolaForm(FlaskForm):
@@ -139,6 +159,11 @@ class novoPratoForm(FlaskForm):
 
 class selectFieldAlimento(FlaskForm):
     alimento_select = SelectField('alimento', choices=[])
+    search = SearchField('search')
+    quantidade_select = IntegerField('quantidade')
+
+class selectEscolaQRCode(FlaskForm):
+    escola_select = SelectField('escola', choices=[])
 
 
 

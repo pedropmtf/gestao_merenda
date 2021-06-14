@@ -1,5 +1,4 @@
 {% extends 'base_layout.html' %}
-
     <body>
         {% block content %}
             <h1>{{ nome }}</h1>
@@ -7,10 +6,18 @@
                 {{ form.csrf_token }}
                 <div class='form-group'>
                     {{ form.alimento_select.label }}
-                    {{ form.alimento_select(class_="form-control") }}
+                    <div class="dropdown">
+                        {{ form.alimento_select(class_="dropbtn", onclick="myFunction()") }}
+                        <div id="myDropdown" class="dropdown-content"> 
+                            {{ form.search(id="myInput", onkeyup="filterFunction()") }}
+                        </div>
+                    </div>
                 </div>
-                
-                <input type="submit" value="Submit" class="btn btn-sucess">
+                <div class='form-group'>
+                    {{ form.quantidade_select.label }}
+                    {{ form.quantidade_select(class_="form-control")}}
+                </div>
+                <input type="submit" value="Submit">
             </form>
             <table class="table">
                 <thread>
@@ -19,14 +26,36 @@
                         <th class='col'>Quantidade</th>
                     </tr>
                 </thread>
-                <tbody>
-                    {% for alimentos in todos_alimentos %}
+                <tbody>      
+                    {% for alimento in todos_alimentos %}
                         <tr>
-                            <th>{{ alimentos.nome }} </th>
-                            <th>Null</th>
+                            <th>{{ alimento.alimentos.nome }} </th>
+                            <th>{{ alimento.quantidade }}</th>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <a href="{{ url_for('pratos') }}"><button class="btn btn-success voltar">Voltar</button></a>
+            <script>
+                function myFunction() {
+                        document.getElementById("myDropdown").classList.toggle("show");
+                        }
+
+                        function filterFunction() {
+                            var input, filter, ul, li, option, i;
+                            input = document.getElementById("myInput");
+                            filter = input.value.toUpperCase();
+                            div = document.getElementById("myDropdown");
+                            option = div.getElementsByTagName("option");
+                            for (i = 0; i < option.length; i++) {
+                                txtValue = option[i].textContent || option[i].innerText;
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    option[i].style.display = "";
+                                    } else {
+                                    option[i].style.display = "none";
+                                }
+                            }
+                        }
+            </script>
         {% endblock %}
     </body>

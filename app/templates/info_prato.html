@@ -5,8 +5,10 @@
         <div>
             <h1>info_prato, {{ id }}</h1>
         </div>
-        <div id="chart" class="chart"></div>
-
+        <div class="grafico">
+            <div id="chart" class="chart"></div>
+        </div>
+        <a href="{{ url_for('pratos') }}"><button class="btn btn-success voltar">Voltar</button></a>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script type="text/javascript">
             var graphs = {{ graphJSON|safe}};

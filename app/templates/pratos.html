@@ -19,8 +19,8 @@
                         <td>{{ pratos.nome }}</td>
                         <td>{{ pratos.descricao }}</td>
                         <td><a href="{{ url_for('info_prato', id= pratos.pratos_id  )}}"><button type='button' class='btn btn-info'>Info</button></td>
-                        <td><a href='#'><button type='button' class='btn btn-success'>Editar</button></a></td>
-                        <td><a href='#'><button type='button' class='btn btn-danger'>Excluir</button></a></td>
+                        <td><a href="{{ url_for('prato_nome', id=pratos.pratos_id) }}"><button type='button' class='btn btn-success'>Editar</button></a></td>
+                        <td><a href="{{ url_for('delete_prato', id=pratos.pratos_id) }}"><button type='button' class='btn btn-danger'>Excluir</button></a></td>
                     </tr>
                 {% endfor %}
             </tbody>

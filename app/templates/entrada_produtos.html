@@ -3,21 +3,34 @@
 <body>
     {% block content %} 
         <h1>Entrada de produtos</h1>
-        <form action= "{{ url_for('entrada_produtos') }}" method="POST">
-            {{ form.csrf_token }}
-            {{ form.origem.label }}
-            {{ form.origem }}
-            {{ form.destino.label }}
-            {{ form.destino }}
-            {{ form.quantidade.label }}
-            {{ form.quantidade }}
-            {{ form.alimento.label }}
-            {{ form.alimento }}
-            {{ form.notaFiscal.label }}
-            {{ form.notaFiscal }}
-        </form>
+        <div class="entrada_form">
+            <form action= "{{ url_for('entrada_produtos') }}" method="POST" class="form-group">
+                
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    {{ form.origem.label }}
+                    {{ form.origem(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.destino.label }}
+                    {{ form.destino(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.quantidade.label }}
+                    {{ form.quantidade(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.alimento.label }}
+                    {{ form.alimento(class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.notaFiscal.label }}
+                    {{ form.notaFiscal(class_="form-control") }}
+                </div>
+            </form>
+        </div>
         <div class='btn-novo-item'>
-            <a href='/alimentos'><button type='button' class='btn btn-success'>Cadastrar</button></a>
+            <a href='/estoque'><button type='button' class='btn btn-success'>Cadastrar</button></a>
         </div>
     {% endblock %}
 </body>

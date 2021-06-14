@@ -1,0 +1,8 @@
+Lista de coisas a fazer
+
+1 - Criar relaçoes da tabela movimentos
+2 - Criar relaçoes da tabela estoque
+3 - Criar a feature search dropdown 
+4 - mostrar a quantidade de pratos
+5 - Criar o request de delete de pratos
+6 - 

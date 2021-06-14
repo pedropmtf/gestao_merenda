@@ -2,7 +2,7 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, novaEscolaForm, novoPratoForm, Pratos, selectFieldAlimento
+from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, novaEscolaForm, novoPratoForm, Pratos, selectEscolaQRCode, selectFieldAlimento, pratos_alimentos, selectEscolaQRCode
 from makeqrcode import makeQRCode
 from app import db
 from app.models import User
@@ -78,19 +78,33 @@ def init_app(app):
         pratos = Pratos.query.filter_by(pratos_id= id).first()
         form = selectFieldAlimento()
         form.alimento_select.choices = [ (alimento.alimentos_id, alimento.nome) for alimento in Alimentos.query.all()]
+        a = Pratos.query.filter_by(pratos_id=id).join(pratos_alimentos).join(Alimentos).first()
+
+        if a != None:
+            todos_alimentos = a.alimentos_relat
+
         if form.validate_on_submit():
             alimento_escolhido_id = form.alimento_select.data
-            alimento_escolhido = Alimentos.query.filter_by(alimentos_id = alimento_escolhido_id).first()
-            prato = Pratos.query.filter_by(pratos_id = id).first()
-            alimento_escolhido.alimentos_usados.append(prato)
+            quant = pratos_alimentos(quantidade = form.quantidade_select.data)
+            quant.alimentos = Alimentos.query.filter_by(alimentos_id = alimento_escolhido_id).first()
+            pratos = Pratos.query.filter_by(pratos_id = id).first()
+            pratos.alimentos_relat.append(quant)
             db.session.commit()
             return redirect(url_for('prato_nome', id=id))
-        return render_template("prato_nome.html", nome = pratos.nome, form = form, todos_alimentos = pratos.alimentos_relat)
+        return render_template("prato_nome.html", nome = pratos.nome, form = form, todos_alimentos=todos_alimentos)
+
+
 
     @app.route('/info_prato/<id>', methods=['GET', 'POST'])
     def info_prato(id):
-        alimentos = Pratos.query.filter_by(pratos_id=id).first().alimentos_relat
-        graphJSON = createGraphs(alimentos)
+        #######
+        a = Pratos.query.filter_by(pratos_id=id).join(pratos_alimentos).join(Alimentos).first()
+        b =[]
+        if a != None:
+            for i in a.alimentos_relat:
+                b.append(i.alimentos)
+        ######
+        graphJSON = createGraphs(b)
         return render_template('info_prato.html', id=id, graphJSON=graphJSON)
 
 
@@ -111,6 +125,9 @@ def init_app(app):
     @app.route('/entrada_produtos')
     def entrada_produtos():
         form = EntradaProdutos()
+        form.origem.choices = [ (escola.id, escola.nome) for escola in Escolas.query.all()]
+        form.destino.choices = [ (escola.id, escola.nome) for escola in Escolas.query.all()]
+        form.alimento.choices = [ (alimento.alimentos_id, alimento.nome) for alimento in Alimentos.query.all()]
         return render_template('entrada_produtos.html', form=form)
 
     @app.route('/saida_produtos')
@@ -145,9 +162,34 @@ def init_app(app):
 
     @app.route('/qrcode')
     def qrcode():
+        form = selectEscolaQRCode()
+        form.escola_select.choices = [ (escola.id, escola.nome) for escola in Escolas.query.all()]
+        return render_template('qrcode.html', form=form)
+
+    @app.route('/qrcode/<escola>', methods=["GET", "POST"])
+    def qrcode_escola(escola):
         makeQRCode()
-        return render_template('qrcode.html')
+        return render_template('')
 
     @app.route('/pesquisa')
     def pesquisa():
         return render_template('pesquisa.html')
+
+    @app.route('/avaliacao')
+    def avaliacao():
+        return render_template('avaliacao.html')
+
+    @app.route('/movimentos')
+    def movimentos():
+        return render_template('movimentos.html')
+
+    @app.route('/delete/<id>')
+    def delete_prato(id):
+        prato = Pratos.query.filter_by(pratos_id=id).first()
+        association_prato = pratos_alimentos.query.filter_by(Pratos_id=id).all()
+        for i in association_prato:
+            db.session.delete(i)
+            db.session.commit()
+        db.session.delete(prato)
+        db.session.commit()
+        return redirect(url_for("pratos"))
