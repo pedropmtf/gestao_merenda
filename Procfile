@@ -1,1 +1,1 @@
-﻿web: gunicorn merenda main.py:app
+﻿web:gunicorn merenda main.py:app
