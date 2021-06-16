@@ -9,7 +9,7 @@ today = today.strftime("%d/%m/%Y")
 
 
 
-input_data = 'http://127.0.0.1:5000/avaliacao'
+input_data = 'https://merenda-gestao.herokuapp.com/avaliacao'
 
 def makeQRCode():
     qr = qrcode.QRCode(
@@ -22,7 +22,7 @@ def makeQRCode():
     qr.make(fit=True)
 
     img=qr.make_image(fill='black', back_color='white')
-    img.save('app/static/qrcode002.png')
+    img.save('app/static/qrcode003.png')
     
 makeQRCode()
 
