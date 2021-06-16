@@ -9,7 +9,7 @@ from wtforms.fields.html5 import SearchField
 
 
  
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"autoflush": False})
 login_manager = LoginManager()
 
 @login_manager.user_loader
@@ -53,6 +53,15 @@ class Movimentos(db.Model, UserMixin):
     alimentos = db.relationship('Alimentos', back_populates="alimentos_relat")
     origem = db.relationship('Escolas', foreign_keys=[origem_id])
     destino = db.relationship('Escolas', foreign_keys=[destino_id])
+    
+class Estoque(db.Model, UserMixin):
+    __tablename__ = 'Estoque'
+    id = db.Column(db.Integer, primary_key=True)
+    alimento_id = db.Column(db.Integer, db.ForeignKey('Alimentos.alimentos_id'), primary_key=True)
+    escola_id = db.Column(db.Integer, db.ForeignKey('Escolas.id'), primary_key=True)
+    quantidade = db.Column(db.Integer)
+    alimentos = db.relationship('Alimentos', back_populates="alimentos_estocados")
+    escolas = db.relationship('Escolas', back_populates="escolas_estoques")
 
 class Pratos(db.Model, UserMixin):
     __tablename__ = "Pratos"
@@ -79,6 +88,7 @@ class Alimentos(db.Model, UserMixin):
     restricao = db.Column(db.Integer)
     pratos_relat = db.relationship("pratos_alimentos", back_populates="alimentos")
     alimentos_relat = db.relationship("Movimentos", back_populates="alimentos")
+    alimentos_estocados = db.relationship("Estoque", back_populates="alimentos")
 
 class Roles(db.Model, UserMixin):
     __tablename__ = "Roles"
@@ -97,6 +107,7 @@ class Escolas(db.Model, UserMixin):
     bairro = db.Column(db.String(84))
     endereco = db.Column(db.String(84))
     alunos = db.Column(db.Integer)
+    escolas_estoques = db.relationship("Estoque", back_populates="escolas")
 
 
 class Satisfacao(db.Model, UserMixin):
@@ -104,17 +115,7 @@ class Satisfacao(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer)
 
-#############
-#Avaliar esse codigo
 
-
-#####################
-
-
-
-class Estoque(db.Model, UserMixin):
-    __tablename__ = 'Estoque'
-    id = db.Column(db.Integer, primary_key=True)
 
 
 

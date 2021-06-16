@@ -26,24 +26,20 @@
                         <th class='col'>Produto</th>
                         <th class='col'>Setor</th>
                         <th class='col'>Quantidade</th>
-                        <th class='col'>Unidade</th>
-                        <th class='col'></th>
-                        <th class='col'></th>
                     </tr>
                 </thread>
                 <tbody>
-                    <tr>
-                        <th scope='row'></th>
-                        <td>Produto</td>
-                        <td>Setor</td>
-                        <td>Quantidade</td>
-                        <td>Unidade</td>
-                        <td><a href='/entrada_produtos'><button type='button' class='btn btn-success'>Entrada</button></a></td>
-                        <td><a href='/saida_produtos'><button type='button' class='btn btn-danger'>Saída</button></a></td>
-                        <td></td>
-                    </tr>
+                    {% for estoque in estoques %}
+                        <tr>
+                            <th scope='row'>{{ estoque.id }}</th>
+                            <td>{{ estoque.alimentos.nome }}</td>
+                            <td>{{ estoque.escolas.nome }}</td>
+                            <td>{{ estoque.quantidade }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            <a href='/entrada_produtos'><button type='button' class='btn btn-success btn-novo-item'>Novo Movimento</button></a>
         </div>
     {% endblock %}
 </body>

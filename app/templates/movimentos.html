@@ -3,6 +3,30 @@
 <body>
     {% block content %} 
         <h1>Movimentos</h1>
+        <table class='table'>
+            <thread>
+                <tr>
+                    <th class='col'>Id</th>
+                    <th class='col'>Origem</th>
+                    <th class='col'>Destino</th>
+                    <th class='col'>Alimento</th>
+                    <th class='col'>Quantidade</th>
+                    <th class='col'>Nota Fiscal</th>
+                </tr>
+            </thread>
+            <tbody>
+                {% for movimentos in movi %}
+                    <tr>
+                        <th scope='row'>{{ movimentos.id }}</th>
+                        <th scope='row'>{{ movimentos.origem.nome }}</th>
+                        <th scope='row'>{{ movimentos.destino.nome }}</th>
+                        <th scope='row'>{{ movimentos.alimentos.nome }}</th>
+                        <th scope='row'>{{ movimentos.quantidade }}</th>
+                        <th scope='row'>{{ movimentos.nota_fiscal }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endblock %}
 
 </body>

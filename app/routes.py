@@ -2,7 +2,7 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, novaEscolaForm, novoPratoForm, Pratos, selectEscolaQRCode, selectFieldAlimento, pratos_alimentos, selectEscolaQRCode
+from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, novaEscolaForm, novoPratoForm, Pratos, selectEscolaQRCode, selectFieldAlimento, pratos_alimentos, selectEscolaQRCode, Movimentos, Estoque
 from makeqrcode import makeQRCode
 from app import db
 from app.models import User
@@ -38,7 +38,8 @@ def init_app(app):
 
     @app.route('/estoque')
     def estoque():
-        return render_template('estoque.html')
+        estoques = Estoque.query.all()
+        return render_template('estoque.html', estoques=estoques)
 
     @app.route('/novos_produtos')
     def novos_produtos():
@@ -79,10 +80,9 @@ def init_app(app):
         form = selectFieldAlimento()
         form.alimento_select.choices = [ (alimento.alimentos_id, alimento.nome) for alimento in Alimentos.query.all()]
         a = Pratos.query.filter_by(pratos_id=id).join(pratos_alimentos).join(Alimentos).first()
-
+        todos_alimentos=[]
         if a != None:
             todos_alimentos = a.alimentos_relat
-
         if form.validate_on_submit():
             alimento_escolhido_id = form.alimento_select.data
             quant = pratos_alimentos(quantidade = form.quantidade_select.data)
@@ -92,8 +92,6 @@ def init_app(app):
             db.session.commit()
             return redirect(url_for('prato_nome', id=id))
         return render_template("prato_nome.html", nome = pratos.nome, form = form, todos_alimentos=todos_alimentos)
-
-
 
     @app.route('/info_prato/<id>', methods=['GET', 'POST'])
     def info_prato(id):
@@ -122,17 +120,58 @@ def init_app(app):
     def financeiro():
         return render_template('financeiro.html')
 
-    @app.route('/entrada_produtos')
+    @app.route('/entrada_produtos', methods=["GET", "POST"])
     def entrada_produtos():
         form = EntradaProdutos()
         form.origem.choices = [ (escola.id, escola.nome) for escola in Escolas.query.all()]
         form.destino.choices = [ (escola.id, escola.nome) for escola in Escolas.query.all()]
         form.alimento.choices = [ (alimento.alimentos_id, alimento.nome) for alimento in Alimentos.query.all()]
-        return render_template('entrada_produtos.html', form=form)
+        if form.validate_on_submit():
+            movimento = Movimentos(quantidade = form.quantidade.data, nota_fiscal = form.notaFiscal.data)
+            movimento_id = Movimentos.query.order_by(Movimentos.id.desc()).first()
+            
+            if movimento_id == None:
+                movimento.id = 1
+            else:
+                movimento_id.id += 1
+                movimento.id = movimento_id.id
+            
+            movimento.alimentos = Alimentos.query.filter_by(alimentos_id = form.alimento.data).first()
+            movimento.origem = Escolas.query.filter_by(id = form.origem.data).first()
+            movimento.destino = Escolas.query.filter_by(id = form.destino.data).first()
+            db.session.add(movimento)
+            db.session.commit()
 
-    @app.route('/saida_produtos')
-    def saida_produtos():
-        return render_template('saida_produtos.html')
+            estoque = Estoque.query.filter_by(escola_id = form.destino.data).filter_by(alimento_id = form.alimento.data).first()
+            if estoque == None:
+                print('Tenho que criar essa linha de estoque')
+                estoque = Estoque()
+                estoque_id = Estoque.query.order_by(Estoque.id.desc()).first()
+            
+                if estoque_id == None:
+                    estoque.id = 1
+                else:
+                    estoque_id.id += 1
+                    estoque.id = estoque_id.id
+                
+                estoque.escola_id = form.destino.data
+                estoque.quantidade = form.quantidade.data
+                estoque.alimento_id = int(form.alimento.data)
+                db.session.add(estoque)
+                db.session.commit()
+            else:
+                print('Tenho que adicionar a quantidade ao estoque')
+                estoque.quantidade += form.quantidade.data
+                db.session.add(estoque)
+                db.session.commit()
+                
+            estoque_saida = Estoque.query.filter_by(escola_id = form.origem.data).filter_by(alimento_id = form.alimento.data).first()
+            if estoque_saida != None:
+                estoque_saida.quantidade -= form.quantidade.data
+                db.session.add(estoque_saida)
+                db.session.commit()
+            return redirect(url_for('estoque'))
+        return render_template('entrada_produtos.html', form=form)
 
     @app.route('/novo_alimento', methods=['GET', 'POST'])
     def novo_alimento():
@@ -181,7 +220,8 @@ def init_app(app):
 
     @app.route('/movimentos')
     def movimentos():
-        return render_template('movimentos.html')
+        movi = Movimentos.query.all()
+        return render_template('movimentos.html', movi=movi)
 
     @app.route('/delete/<id>')
     def delete_prato(id):
