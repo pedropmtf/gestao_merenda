@@ -2,11 +2,13 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, novaEscolaForm, novoPratoForm, Pratos, selectEscolaQRCode, selectFieldAlimento, pratos_alimentos, selectEscolaQRCode, Movimentos, Estoque
+from werkzeug.utils import secure_filename
+from app.models import Alimentos, EntradaProdutos, LoginForm, NovoAlimentoForm, Escolas, current_user, novaEscolaForm, novoPratoForm, Pratos, selectEscolaQRCode, selectFieldAlimento, pratos_alimentos, selectEscolaQRCode, Movimentos, Estoque
 from makeqrcode import makeQRCode
-from app import db
+from app import ALLOWED_EXTENSIONS, db
 from app.models import User
 from graphs import createGraphs
+import os
 
 def init_app(app):
     @app.route("/", methods=["GET", "POST"])
@@ -30,11 +32,30 @@ def init_app(app):
             return redirect(url_for('home'))
         return render_template("index.html", form=form)
 
-
+    def allowed_file(filename):
+        return "." in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     @app.route('/home', methods=['GET', "POST"])
     @login_required
     def home():
-        return render_template('home.html')
+        if request.method == "POST":
+            print('entrei aqui')
+            if 'file' not in request.files:
+                flash('no file part')
+                print('no file part')
+                return redirect(request.url)
+            file = request.files['file']
+            if file.filename == '':
+                flash('no selected file')
+                print('no selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                print('arquivo salvo')
+                return redirect(url_for('home'))
+        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '20190314_143636.jpg')
+        print(full_filename)
+        return render_template('home.html', foto = full_filename)
 
     @app.route('/estoque')
     def estoque():

@@ -3,8 +3,18 @@
 <body>
     {% block content %}
         <h1>Home</h1>
-        <label class="btn btn-primary">Postar foto
-            <input type="file" accept="image/*" capture="camera" class="form-control-file" hidden>
-        </label>
+        <div class='testes side-bar'>
+            <form method="post" enctype="multipart/form-data">
+                <label class="btn btn-primary">Postar foto
+                    <input type="file" accept="image/*" capture="camera" class="form-control-file" name="file" hidden>
+                    
+                </label>
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+        <div class="testes2">
+            <img src="./static/images/20190314_143636.jpg" alt="foto" class="show_images">
+        </div>
+
     {% endblock %}
 </body>
